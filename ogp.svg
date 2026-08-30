@@ -1,10 +1,18 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
-  <rect width="1200" height="630" fill="#e11d48"/>
-  <path d="M0 0 L760 0 L440 630 L0 630 Z" fill="#0891b2"/>
-  <circle cx="1080" cy="70" r="150" fill="none" stroke="#ffffff" stroke-width="3" opacity="0.55"/>
-  <circle cx="60" cy="560" r="90" fill="none" stroke="#ffffff" stroke-width="3" opacity="0.4"/>
-  <rect x="70" y="64" width="90" height="46" rx="10" fill="#ffffff"/>
-  <text x="115.0" y="94" font-size="20" font-weight="700" fill="#881337" text-anchor="middle" font-family="'Noto Sans JP', sans-serif">仕事</text>
-  <g transform="translate(600 210) scale(6.0) translate(-32 -32)" fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 42 Q10 42 10 34 Q10 26 18 26 Q20 16 32 16 Q44 16 46 26 Q54 26 54 34 Q54 42 44 42 Z"/></g>
-  <text x="600" y="490" font-size="54" font-weight="900" text-anchor="middle" fill="#ffffff" font-family="'Noto Sans JP', sans-serif">Web制作モヤほどき</text>
+  <defs>
+    <radialGradient id="mn-glow" cx="50%" cy="36%" r="46%">
+      <stop offset="0%" stop-color="#e11d48" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#e11d48" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="mn-dots" width="36" height="36" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.4" fill="#ffffff" opacity="0.06"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="630" fill="#0a0a12"/>
+  <rect width="1200" height="630" fill="url(#mn-dots)"/>
+  <rect width="1200" height="630" fill="url(#mn-glow)"/>
+  <rect x="80" y="64" width="90" height="46" rx="10" fill="none" stroke="#e11d48" stroke-width="1.5"/><text x="125.0" y="94" font-size="20" font-weight="700" fill="#e11d48" text-anchor="middle" font-family="'Noto Sans JP', sans-serif">仕事</text>
+  <g transform="translate(600 230) scale(5.5) translate(-32 -32)" fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 42 Q10 42 10 34 Q10 26 18 26 Q20 16 32 16 Q44 16 46 26 Q54 26 54 34 Q54 42 44 42 Z"/></g>
+  <text x="600" y="470" font-size="54" font-weight="900" text-anchor="middle" fill="#ffffff" font-family="'Noto Sans JP', sans-serif">Web制作モヤほどき</text>
+  <rect x="546" y="498" width="108" height="3" fill="#e11d48"/>
 </svg>
