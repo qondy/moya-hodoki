@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Web制作モヤほどき — 機能紹介</title>
+<meta name="description" content="WEB制作の状況と「どこが不安か」を入力すると、次に取るべきアクションを提案してくれるアプリ。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --c1: #0e7490;
+    --c2: #22d3ee;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Noto Sans JP', sans-serif;
+    background: #10181c;
+    color: #ececec;
+    line-height: 1.7;
+  }
+  a { color: inherit; text-decoration: none; }
+  .topbar {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 24px 20px 0;
+  }
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    color: #9a9a9a;
+    transition: color .15s ease;
+  }
+  .back-link:hover { color: #fff; }
+
+  .hero {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, var(--c1), var(--c2));
+    margin: 24px 20px 0;
+    border-radius: 24px;
+    padding: 64px 24px;
+    text-align: center;
+  }
+  .hero::before, .hero::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    background: #ffffff;
+    opacity: 0.07;
+    filter: blur(10px);
+  }
+  .hero::before { width: 240px; height: 240px; top: -80px; left: -60px; }
+  .hero::after { width: 300px; height: 300px; bottom: -120px; right: -80px; }
+  .badge {
+    position: relative;
+    width: 128px;
+    height: 128px;
+    margin: 0 auto 24px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.94);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 64px;
+    box-shadow: 0 0 0 14px rgba(255,255,255,0.14);
+  }
+  .category-pill {
+    position: relative;
+    display: inline-block;
+    background: rgba(255,255,255,0.18);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 6px 16px;
+    border-radius: 999px;
+    margin-bottom: 16px;
+  }
+  .hero h1 {
+    position: relative;
+    margin: 0 0 12px;
+    font-size: clamp(28px, 5vw, 40px);
+    font-weight: 800;
+    color: #fff;
+  }
+  .hero p.tagline {
+    position: relative;
+    margin: 0 auto 32px;
+    max-width: 520px;
+    font-size: 17px;
+    color: rgba(255,255,255,0.88);
+  }
+  .cta {
+    position: relative;
+    display: inline-block;
+    background: #fff;
+    color: #1a1a1a;
+    font-weight: 700;
+    font-size: 16px;
+    padding: 14px 36px;
+    border-radius: 999px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+    transition: transform .15s ease;
+  }
+  .cta:hover { transform: translateY(-2px); }
+
+  .features {
+    max-width: 880px;
+    margin: 56px auto 0;
+    padding: 0 20px;
+  }
+  .features h2 {
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0 0 24px;
+    color: #fff;
+  }
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+  }
+  .feature-card {
+    background: #18232a;
+    border: 1px solid #263440;
+    border-radius: 16px;
+    padding: 24px;
+  }
+  .feature-icon {
+    font-size: 28px;
+    margin-bottom: 12px;
+  }
+  .feature-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin: 0 0 8px;
+    color: #fff;
+  }
+  .feature-desc {
+    font-size: 14px;
+    color: #a8b3b8;
+    margin: 0;
+  }
+
+  .note {
+    max-width: 880px;
+    margin: 24px auto 0;
+    padding: 0 20px;
+    font-size: 13px;
+    color: #7a848a;
+  }
+
+  .footer-cta {
+    max-width: 880px;
+    margin: 56px auto 0;
+    padding: 0 20px 64px;
+    text-align: center;
+  }
+  .footer-cta .cta {
+    background: linear-gradient(135deg, var(--c1), var(--c2));
+    color: #fff;
+    box-shadow: none;
+  }
+  .footer-links {
+    margin-top: 20px;
+    font-size: 13px;
+    color: #7a848a;
+  }
+  .footer-links a { color: #9a9a9a; }
+  .footer-links a:hover { color: #fff; }
+</style>
+</head>
+<body>
+  <div class="topbar">
+    <a class="back-link" href="https://apps.yuji-nakamura.com/">← アプリ一覧に戻る</a>
+  </div>
+
+  <section class="hero">
+    <span class="category-pill">仕事</span>
+    <div class="badge">🌫️</div>
+    <h1>Web制作モヤほどき</h1>
+    <p class="tagline">「なんとなく不安で手が止まる」を、動ける状態に。いまのフェーズと気になっていることを選ぶだけで、次に取るべきアクションを提案します。</p>
+    <a class="cta" href="https://moya-hodoki.vercel.app">アプリを使ってみる →</a>
+  </section>
+
+  <section class="features">
+    <h2>できること</h2>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🧭</div>
+        <h3 class="feature-title">状況と不安から次の一手</h3>
+        <p class="feature-desc">ヒアリング〜公開後までのフェーズと、「要件が曖昧」「スケジュールが厳しい」などの不安タグを選ぶと、その場面に合ったアクションを「なぜ今それか」の理由つきで提案します。</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">✅</div>
+        <h3 class="feature-title">アクションを進捗管理</h3>
+        <p class="feature-desc">提案されたアクションはそのままチェックリストに。完了をチェックしながら、モヤモヤが解けていく様子を可視化します。</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🗂</div>
+        <h3 class="feature-title">案件ごとに履歴を整理</h3>
+        <p class="feature-desc">相談は案件（LP・コーポレート・EC など）に紐づけて保存。後から「あのとき何を決めたか」を振り返れます。</p>
+      </div>
+    </div>
+  </section>
+
+  <p class="note">※ 提案はAIではなく、Web制作の進め方の定石をまとめた内蔵ルールから生成しています。相談データはGoogleアカウントでログインした上で、あなた専用の領域に保存されます。</p>
+
+  <section class="footer-cta">
+    <a class="cta" href="https://moya-hodoki.vercel.app">今すぐ使ってみる →</a>
+    <p class="footer-links"><a href="https://apps.yuji-nakamura.com/">他のアプリも見る</a></p>
+  </section>
+</body>
+</html>
