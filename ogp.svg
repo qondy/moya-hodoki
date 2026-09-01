@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
-  <rect width="1200" height="630" fill="#e11d48"/>
+  <rect width="1200" height="630" fill="#34495e"/>
   <text x="600" y="140" font-size="26" font-weight="600" letter-spacing="4" text-anchor="middle" fill="#ffffff" fill-opacity="0.72" font-family="-apple-system, 'Hiragino Sans', 'Noto Sans JP', sans-serif">仕事</text>
   <g transform="translate(600 275) scale(3.6) translate(-32 -32)" fill="none" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 42 Q10 42 10 34 Q10 26 18 26 Q20 16 32 16 Q44 16 46 26 Q54 26 54 34 Q54 42 44 42 Z"/></g>
   <text x="600" y="480" font-size="76" font-weight="600" text-anchor="middle" fill="#ffffff" font-family="-apple-system, 'Hiragino Sans', 'Noto Sans JP', sans-serif" letter-spacing="-2">Web制作モヤほどき</text>
