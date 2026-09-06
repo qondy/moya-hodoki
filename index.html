@@ -154,6 +154,52 @@
         </details>
       </section>
 
+      <!-- 工数見積り -->
+      <section class="section">
+        <div class="section__head">
+          <div>
+            <h2 class="section__title">🧮 工数見積り</h2>
+            <p class="section__desc">案件を選んで作業を積み上げ、合計工数（人日・人月）を算出します</p>
+          </div>
+        </div>
+
+        <div id="estimate-no-project" class="empty-state">
+          <p>先に「📁 案件」で案件を登録すると、工数見積りが使えます。</p>
+        </div>
+
+        <div id="estimate-panel" class="estimate hidden">
+          <div class="field">
+            <label class="field__label" for="estimate-project">案件</label>
+            <select id="estimate-project"></select>
+          </div>
+
+          <div class="estimate__toolbar">
+            <select id="estimate-template-kind" aria-label="テンプレートの種別"></select>
+            <button type="button" id="btn-estimate-apply-template" class="btn btn--ghost btn--sm">テンプレを追加</button>
+            <button type="button" id="btn-estimate-clear" class="btn btn--ghost btn--sm">全項目を消去</button>
+            <span id="estimate-saved" class="estimate__saved" aria-live="polite"></span>
+          </div>
+
+          <div class="estimate-table" id="estimate-items"></div>
+          <button type="button" id="btn-estimate-add-item" class="btn btn--ghost btn--sm">＋ 項目を追加</button>
+
+          <div class="estimate__params">
+            <label>予備工数
+              <span class="estimate__unit"><input type="number" id="estimate-buffer" min="0" max="100" step="5" inputmode="numeric" />%</span>
+            </label>
+            <label>稼働時間 / 人日
+              <span class="estimate__unit"><input type="number" id="estimate-hpd" min="1" max="24" step="0.5" inputmode="decimal" />h</span>
+            </label>
+            <label>営業日 / 人月
+              <span class="estimate__unit"><input type="number" id="estimate-dpm" min="1" max="31" step="1" inputmode="numeric" />日</span>
+            </label>
+          </div>
+
+          <div class="estimate-totals" id="estimate-totals"></div>
+          <p class="estimate__note">工数はあくまで内部見積りの目安です。実案件では条件・前提を明記してご提示ください。</p>
+        </div>
+      </section>
+
     </main>
 
     <footer class="footer">

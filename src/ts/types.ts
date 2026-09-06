@@ -28,3 +28,20 @@ export interface Entry {
   createdAt: Timestamp | null;
   updatedAt: Timestamp | null;
 }
+
+export interface EstimateItem {
+  id: string;
+  label: string;
+  hours: number; // 1件あたりの工数（時間）
+  qty: number; // 数量（ページ数など）
+}
+
+export interface Estimate {
+  projectId: string;
+  items: EstimateItem[];
+  bufferPercent: number; // 予備工数（%）
+  hoursPerDay: number; // 1人日あたりの稼働時間
+  daysPerMonth: number; // 1人月あたりの営業日数
+  updatedAt: Timestamp | null;
+  createdAt: Timestamp | null;
+}

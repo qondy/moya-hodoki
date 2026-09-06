@@ -572,6 +572,179 @@
   }
 }
 
+// ===== 工数見積り =====
+.estimate {
+  background: $color-surface;
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+
+  .field {
+    margin-bottom: $spacing-md;
+  }
+
+  &__toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: $spacing-sm;
+    margin-bottom: $spacing-md;
+
+    select {
+      padding: 6px $spacing-sm;
+      border: 1px solid $color-border;
+      border-radius: $radius-sm;
+      font-size: $font-size-sm;
+      background: $color-surface;
+      color: $color-text;
+    }
+  }
+
+  &__saved {
+    font-size: $font-size-xs;
+    color: $color-text-muted;
+    margin-left: auto;
+  }
+
+  &__params {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $spacing-md;
+    margin-top: $spacing-md;
+
+    label {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: $font-size-xs;
+      color: $color-text-muted;
+      font-weight: 700;
+    }
+  }
+
+  &__unit {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: $font-size-sm;
+    color: $color-text;
+    font-weight: 400;
+
+    input {
+      width: 68px;
+      padding: 6px $spacing-sm;
+      border: 1px solid $color-border;
+      border-radius: $radius-sm;
+      font-size: $font-size-sm;
+    }
+  }
+
+  &__note {
+    font-size: $font-size-xs;
+    color: $color-text-muted;
+    margin-top: $spacing-md;
+    line-height: 1.6;
+  }
+}
+
+.estimate-table {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+  margin-bottom: $spacing-sm;
+
+  &__empty {
+    font-size: $font-size-sm;
+    color: $color-text-muted;
+    padding: $spacing-md 0;
+  }
+}
+
+.estimate-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-sm 0;
+  border-bottom: 1px solid $color-border;
+
+  &__label {
+    flex: 1 1 200px;
+    min-width: 0;
+    padding: 8px $spacing-sm;
+    border: 1px solid $color-border;
+    border-radius: $radius-sm;
+    font-size: $font-size-sm;
+  }
+
+  &__field {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: $font-size-sm;
+    color: $color-text-muted;
+  }
+
+  &__num {
+    width: 62px;
+    padding: 8px 6px;
+    border: 1px solid $color-border;
+    border-radius: $radius-sm;
+    font-size: $font-size-sm;
+    text-align: right;
+  }
+
+  &__subtotal {
+    min-width: 64px;
+    text-align: right;
+    font-size: $font-size-sm;
+    font-weight: 700;
+    color: $color-text;
+  }
+
+  &__del {
+    flex-shrink: 0;
+  }
+}
+
+.estimate-totals {
+  margin-top: $spacing-md;
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
+    gap: $spacing-sm;
+  }
+
+  &__cell {
+    background: $color-surface-2;
+    border-radius: $radius-md;
+    padding: $spacing-sm;
+    text-align: center;
+
+    &.is-strong {
+      background: rgba($color-primary, 0.1);
+      outline: 1px solid rgba($color-primary, 0.35);
+    }
+  }
+
+  &__label {
+    font-size: $font-size-xs;
+    color: $color-text-muted;
+  }
+
+  &__value {
+    font-size: $font-size-base;
+    font-weight: 800;
+    color: $color-primary;
+    margin-top: 2px;
+  }
+
+  &__cell.is-strong &__value {
+    font-size: $font-size-lg;
+  }
+}
+
 // ===== Dialog (custom confirm) / Modal =====
 .dialog-overlay {
   position: fixed;
