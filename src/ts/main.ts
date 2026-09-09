@@ -283,7 +283,12 @@ function renderEntryCard(entry: Entry): HTMLElement {
   head.className = 'entry-card__head';
   head.append(textEl('span', 'entry-card__phase', phaseLabel(entry.phase)));
   const pjTitle = projectTitleOf(entry.projectId);
-  if (pjTitle) head.append(textEl('span', 'entry-card__project', `📁 ${pjTitle}`));
+  if (pjTitle) {
+    const pjSpan = textEl('span', 'entry-card__project', '');
+    pjSpan.innerHTML = '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" style="width:1em;height:1em;vertical-align:-3px;display:inline-block"><path d="M10 18 H26 L32 24 H54 V48 H10 Z"/></svg>';
+    pjSpan.append(document.createTextNode(` ${pjTitle}`));
+    head.append(pjSpan);
+  }
   const when = entry.createdAt ? formatDate(entry.createdAt.toDate()) : '';
   if (when) head.append(textEl('span', 'entry-card__date', when));
   card.append(head);
@@ -314,7 +319,9 @@ function renderEntryCard(entry: Entry): HTMLElement {
     const item = document.createElement('div');
     item.className = 'action-item' + (action.done ? ' is-done' : '');
 
-    const checkbox = textEl('button', 'action-item__checkbox' + (action.done ? ' is-done' : ''), action.done ? '✓' : '');
+    const checkbox = document.createElement('button');
+  checkbox.className = 'action-item__checkbox' + (action.done ? ' is-done' : '');
+  checkbox.innerHTML = action.done ? '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" style="width:0.8em;height:0.8em"><path d="M14 33 L26 45 L50 19"/></svg>' : '';
     checkbox.setAttribute('type', 'button');
     checkbox.setAttribute('aria-label', action.done ? '未完了に戻す' : '完了にする');
     checkbox.addEventListener('click', () => toggleAction(entry, idx));
@@ -332,7 +339,9 @@ function renderEntryCard(entry: Entry): HTMLElement {
   // --- footer (delete) ---
   const footer = document.createElement('div');
   footer.className = 'entry-card__footer';
-  const delBtn = textEl('button', 'btn btn--ghost btn--sm', '🗑 この相談を削除');
+  const delBtn = document.createElement('button');
+  delBtn.className = 'btn btn--ghost btn--sm';
+  delBtn.innerHTML = '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" style="width:1em;height:1em"><path d="M14 18 H50"/><path d="M22 18 V12 Q22 10 24 10 H40 Q42 10 42 12 V18"/><path d="M18 18 L21 52 Q21 54 23 54 H41 Q43 54 43 52 L46 18"/><line x1="26" y1="26" x2="27" y2="46"/><line x1="38" y1="26" x2="37" y2="46"/></svg> この相談を削除';
   delBtn.setAttribute('type', 'button');
   delBtn.addEventListener('click', () => {
     pendingDelete = { type: 'entry', id: entry.id, label: `${phaseLabel(entry.phase)}の相談` };
@@ -401,7 +410,9 @@ function renderProjectRow(project: Project): HTMLElement {
   const actions = document.createElement('div');
   actions.className = 'project-row__actions';
 
-  const archiveBtn = textEl('button', 'icon-btn', project.archived ? '↩' : '📦');
+  const archiveBtn = document.createElement('button');
+  archiveBtn.className = 'icon-btn';
+  archiveBtn.innerHTML = project.archived ? '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" style="width:1em;height:1em"><path d="M22 22 H40 A14 14 0 1 1 40 50 H30"/><path d="M30 12 L18 22 L30 32"/></svg>' : '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" style="width:1em;height:1em"><path d="M10 20 L32 10 L54 20 L32 30 Z"/><path d="M10 20 V46 L32 56 V30"/><path d="M54 20 V46 L32 56"/></svg>';
   archiveBtn.setAttribute('type', 'button');
   archiveBtn.setAttribute('aria-label', project.archived ? 'アーカイブ解除' : 'アーカイブ');
   archiveBtn.addEventListener('click', () => {
@@ -410,7 +421,9 @@ function renderProjectRow(project: Project): HTMLElement {
       .catch(() => showToast('更新に失敗しました'));
   });
 
-  const delBtn = textEl('button', 'icon-btn is-danger', '🗑');
+  const delBtn = document.createElement('button');
+  delBtn.className = 'icon-btn is-danger';
+  delBtn.innerHTML = '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" style="width:1em;height:1em"><path d="M14 18 H50"/><path d="M22 18 V12 Q22 10 24 10 H40 Q42 10 42 12 V18"/><path d="M18 18 L21 52 Q21 54 23 54 H41 Q43 54 43 52 L46 18"/><line x1="26" y1="26" x2="27" y2="46"/><line x1="38" y1="26" x2="37" y2="46"/></svg>';
   delBtn.setAttribute('type', 'button');
   delBtn.setAttribute('aria-label', '削除');
   delBtn.addEventListener('click', () => {
@@ -587,7 +600,9 @@ function renderEstimateItems(): void {
     hours.addEventListener('input', recompute);
     qty.addEventListener('input', recompute);
 
-    const del = textEl('button', 'icon-btn is-danger estimate-row__del', '🗑');
+    const del = document.createElement('button');
+    del.className = 'icon-btn is-danger estimate-row__del';
+    del.innerHTML = '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" style="width:1em;height:1em"><path d="M14 18 H50"/><path d="M22 18 V12 Q22 10 24 10 H40 Q42 10 42 12 V18"/><path d="M18 18 L21 52 Q21 54 23 54 H41 Q43 54 43 52 L46 18"/><line x1="26" y1="26" x2="27" y2="46"/><line x1="38" y1="26" x2="37" y2="46"/></svg>';
     del.setAttribute('type', 'button');
     del.setAttribute('aria-label', '項目を削除');
     del.addEventListener('click', () => {

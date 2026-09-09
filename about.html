@@ -10,8 +10,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
-    --c1: #0e7490;
-    --c2: #22d3ee;
+    --c1: #34495e;
+    --c2: #2c3e50;
   }
   * { box-sizing: border-box; }
   body {
@@ -67,8 +67,10 @@
     align-items: center;
     justify-content: center;
     font-size: 64px;
+    color: var(--c1);
     box-shadow: 0 0 0 14px rgba(255,255,255,0.14);
   }
+  .badge svg { width: 64px; height: 64px; }
   .category-pill {
     position: relative;
     display: inline-block;
@@ -133,7 +135,9 @@
   .feature-icon {
     font-size: 28px;
     margin-bottom: 12px;
+    color: var(--c1);
   }
+  .feature-icon svg { width: 30px; height: 30px; }
   .feature-title {
     font-size: 16px;
     font-weight: 700;
@@ -181,7 +185,7 @@
 
   <section class="hero">
     <span class="category-pill">仕事</span>
-    <div class="badge">🌫️</div>
+    <div class="badge"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 42 Q10 42 10 34 Q10 26 18 26 Q20 16 32 16 Q44 16 46 26 Q54 26 54 34 Q54 42 44 42 Z"/></svg></div>
     <h1>Web制作モヤほどき</h1>
     <p class="tagline">「なんとなく不安で手が止まる」を、動ける状態に。いまのフェーズと気になっていることを選ぶだけで、次に取るべきアクションを提案します。</p>
     <a class="cta" href="https://moya-hodoki.vercel.app">アプリを使ってみる →</a>
@@ -191,22 +195,22 @@
     <h2>できること</h2>
     <div class="feature-grid">
       <div class="feature-card">
-        <div class="feature-icon">🧭</div>
+        <div class="feature-icon"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><path d="M40 24 L28 28 L24 40 L36 36 Z" fill="currentColor" stroke="none"/></svg></div>
         <h3 class="feature-title">状況と不安から次の一手</h3>
         <p class="feature-desc">ヒアリング〜公開後までのフェーズと、「要件が曖昧」「スケジュールが厳しい」などの不安タグを選ぶと、その場面に合ったアクションを「なぜ今それか」の理由つきで提案します。</p>
       </div>
       <div class="feature-card">
-        <div class="feature-icon">✅</div>
+        <div class="feature-icon"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><path d="M23 33 L29 39 L42 25"/></svg></div>
         <h3 class="feature-title">アクションを進捗管理</h3>
         <p class="feature-desc">提案されたアクションはそのままチェックリストに。完了をチェックしながら、モヤモヤが解けていく様子を可視化します。</p>
       </div>
       <div class="feature-card">
-        <div class="feature-icon">🗂</div>
+        <div class="feature-icon"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 18 H26 L32 24 H54 V48 H10 Z"/></svg></div>
         <h3 class="feature-title">案件ごとに履歴を整理</h3>
         <p class="feature-desc">相談は案件（LP・コーポレート・EC など）に紐づけて保存。後から「あのとき何を決めたか」を振り返れます。</p>
       </div>
       <div class="feature-card">
-        <div class="feature-icon">🧮</div>
+        <div class="feature-icon"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><rect x="14" y="8" width="36" height="48" rx="4"/><line x1="20" y1="18" x2="44" y2="18"/><circle cx="22" cy="30" r="2" fill="currentColor" stroke="none"/><circle cx="32" cy="30" r="2" fill="currentColor" stroke="none"/><circle cx="42" cy="30" r="2" fill="currentColor" stroke="none"/><circle cx="22" cy="40" r="2" fill="currentColor" stroke="none"/><circle cx="32" cy="40" r="2" fill="currentColor" stroke="none"/><circle cx="42" cy="40" r="2" fill="currentColor" stroke="none"/><circle cx="22" cy="50" r="2" fill="currentColor" stroke="none"/><circle cx="32" cy="50" r="2" fill="currentColor" stroke="none"/><circle cx="42" cy="50" r="2" fill="currentColor" stroke="none"/></svg></div>
         <h3 class="feature-title">工数見積りの積み上げ</h3>
         <p class="feature-desc">案件種別ごとの定番作業テンプレートから、作業内容 × 時間 × 数量を積み上げて合計工数を算出。予備工数（%）を加えて、人日・人月に換算して表示します。</p>
       </div>
