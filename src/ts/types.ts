@@ -45,3 +45,16 @@ export interface Estimate {
   updatedAt: Timestamp | null;
   createdAt: Timestamp | null;
 }
+
+export interface ChecklistItemState {
+  id: string;
+  checked: boolean;
+  note: string;
+}
+
+export interface Checklist {
+  projectId: string;
+  items: ChecklistItemState[];
+  updatedAt: Timestamp | null;
+  createdAt: Timestamp | null;
+}

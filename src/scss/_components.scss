@@ -754,6 +754,88 @@
   }
 }
 
+// ===== コーディング開始前チェック =====
+.checklist {
+  background: $color-surface;
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+
+  .field {
+    margin-bottom: $spacing-md;
+  }
+
+  &__toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: $spacing-sm;
+    margin-bottom: $spacing-md;
+  }
+
+  &__progress {
+    font-size: $font-size-sm;
+    font-weight: 700;
+    color: $color-primary;
+  }
+}
+
+.checklist-groups {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
+}
+
+.checklist-group {
+  &__title {
+    font-size: $font-size-sm;
+    font-weight: 700;
+    color: $color-text-muted;
+    margin-bottom: $spacing-sm;
+    padding-bottom: 4px;
+    border-bottom: 1px solid $color-border;
+  }
+}
+
+.checklist-item {
+  display: flex;
+  gap: $spacing-sm;
+  padding: $spacing-sm 0;
+  border-bottom: 1px solid $color-border;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &__body {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__label {
+    font-size: $font-size-sm;
+    font-weight: 600;
+    line-height: 1.55;
+  }
+
+  &.is-done &__label {
+    color: $color-text-muted;
+    text-decoration: line-through;
+  }
+
+  &__note {
+    display: block;
+    width: 100%;
+    margin-top: 6px;
+    padding: 6px $spacing-sm;
+    border: 1px solid $color-border;
+    border-radius: $radius-sm;
+    font-size: $font-size-xs;
+    background: $color-surface;
+    color: $color-text;
+  }
+}
+
 // ===== Dialog (custom confirm) / Modal =====
 .dialog-overlay {
   position: fixed;

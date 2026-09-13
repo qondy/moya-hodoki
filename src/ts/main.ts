@@ -14,7 +14,11 @@ import {
   getEstimate, saveEstimate, deleteEstimate, emptyEstimate, templateItems,
   calcEstimate, newItemId,
 } from './estimates';
-import { Project, Entry, Estimate, ProjectKind } from './types';
+import {
+  getChecklist, saveChecklist, deleteChecklist, emptyChecklistItems, checklistProgress,
+  CHECKLIST_ITEMS, CHECKLIST_CATEGORIES,
+} from './checklists';
+import { Project, Entry, Estimate, Checklist, ProjectKind } from './types';
 
 // ============================================================
 // DOM refs
@@ -72,6 +76,14 @@ const estimateHpd = document.getElementById('estimate-hpd') as HTMLInputElement;
 const estimateDpm = document.getElementById('estimate-dpm') as HTMLInputElement;
 const estimateTotalsEl = document.getElementById('estimate-totals') as HTMLElement;
 
+const checklistNoProject = document.getElementById('checklist-no-project') as HTMLElement;
+const checklistPanel = document.getElementById('checklist-panel') as HTMLElement;
+const checklistProjectSelect = document.getElementById('checklist-project') as HTMLSelectElement;
+const checklistProgressEl = document.getElementById('checklist-progress') as HTMLElement;
+const btnChecklistReset = document.getElementById('btn-checklist-reset') as HTMLButtonElement;
+const checklistSaved = document.getElementById('checklist-saved') as HTMLElement;
+const checklistGroupsEl = document.getElementById('checklist-groups') as HTMLElement;
+
 // ============================================================
 // State
 // ============================================================
@@ -86,7 +98,8 @@ let freshEntryId: string | null = null;
 type PendingDelete =
   | { type: 'entry'; id: string; label: string }
   | { type: 'project'; id: string; label: string }
-  | { type: 'estimate-clear'; id: string; label: string };
+  | { type: 'estimate-clear'; id: string; label: string }
+  | { type: 'checklist-reset'; id: string; label: string };
 let pendingDelete: PendingDelete | null = null;
 
 // 工数見積り
@@ -94,6 +107,12 @@ let estimateProjectId: string | null = null;
 let currentEstimate: Estimate | null = null;
 let estimateIsNew = true;
 let estimateSaveTimer: number | null = null;
+
+// コーディング開始前チェック
+let checklistProjectId: string | null = null;
+let currentChecklist: Checklist | null = null;
+let checklistIsNew = true;
+let checklistSaveTimer: number | null = null;
 
 // ============================================================
 // 静的セレクトの初期化
@@ -163,6 +182,7 @@ onAuthChange((user) => {
       renderProjects();
       renderHistory();
       syncEstimateSection();
+      syncChecklistSection();
     });
     unsubscribeEntries = subscribeEntries(currentUid, (entries) => {
       allEntries = entries;
@@ -176,6 +196,9 @@ onAuthChange((user) => {
     estimateProjectId = null;
     currentEstimate = null;
     if (estimateSaveTimer !== null) { window.clearTimeout(estimateSaveTimer); estimateSaveTimer = null; }
+    checklistProjectId = null;
+    currentChecklist = null;
+    if (checklistSaveTimer !== null) { window.clearTimeout(checklistSaveTimer); checklistSaveTimer = null; }
     loginScreen.classList.remove('hidden');
     appEl.classList.add('hidden');
     userInfo.classList.add('hidden');
@@ -455,20 +478,33 @@ btnConfirmDelete.addEventListener('click', () => {
   if (target.type === 'entry') {
     task = deleteEntry(uid, target.id);
   } else if (target.type === 'project') {
-    // 案件に紐づく工数見積りもあわせて削除（存在しなくてもエラーにしない）
+    // 案件に紐づく工数見積り・チェックリストもあわせて削除（存在しなくてもエラーにしない）
     task = deleteProject(uid, target.id).then(() => {
       if (estimateProjectId === target.id) {
         estimateProjectId = null;
         currentEstimate = null;
       }
-      return deleteEstimate(uid, target.id).catch(() => undefined);
+      if (checklistProjectId === target.id) {
+        checklistProjectId = null;
+        currentChecklist = null;
+      }
+      return Promise.all([
+        deleteEstimate(uid, target.id).catch(() => undefined),
+        deleteChecklist(uid, target.id).catch(() => undefined),
+      ]).then(() => undefined);
     });
-  } else {
+  } else if (target.type === 'estimate-clear') {
     task = clearEstimateItems();
+  } else {
+    task = resetChecklistItems();
   }
 
   task
-    .then(() => showToast(target.type === 'estimate-clear' ? '項目を消去しました' : '削除しました'))
+    .then(() => showToast(
+      target.type === 'estimate-clear' ? '項目を消去しました'
+        : target.type === 'checklist-reset' ? 'チェックをリセットしました'
+          : '削除しました',
+    ))
     .catch((err: Error) => showToast('操作に失敗しました: ' + err.message))
     .finally(() => {
       btnConfirmDelete.disabled = false;
@@ -719,6 +755,174 @@ btnEstimateClear.addEventListener('click', () => {
     renderEstimateTotals();
     scheduleEstimateSave();
   });
+});
+
+// ============================================================
+// コーディング開始前チェック
+// ============================================================
+function syncChecklistSection(): void {
+  const active = allProjects.filter((p) => !p.archived);
+  const hasProjects = active.length > 0;
+  checklistNoProject.classList.toggle('hidden', hasProjects);
+  checklistPanel.classList.toggle('hidden', !hasProjects);
+
+  if (!hasProjects) {
+    checklistProjectId = null;
+    currentChecklist = null;
+    return;
+  }
+
+  const desired = active.some((p) => p.id === checklistProjectId)
+    ? (checklistProjectId as string)
+    : active[0].id;
+
+  checklistProjectSelect.innerHTML = '';
+  active.forEach((p) => {
+    const opt = document.createElement('option');
+    opt.value = p.id;
+    opt.textContent = p.title;
+    checklistProjectSelect.append(opt);
+  });
+  checklistProjectSelect.value = desired;
+
+  if (desired !== checklistProjectId || currentChecklist === null) {
+    void loadChecklist(desired);
+  }
+}
+
+async function loadChecklist(projectId: string): Promise<void> {
+  if (!currentUid) return;
+  checklistProjectId = projectId;
+  if (checklistSaveTimer !== null) { window.clearTimeout(checklistSaveTimer); checklistSaveTimer = null; }
+  checklistSaved.textContent = '';
+
+  let cl: Checklist | null = null;
+  try {
+    cl = await getChecklist(currentUid, projectId);
+  } catch {
+    showToast('チェックリストの読み込みに失敗しました');
+  }
+  if (checklistProjectId !== projectId) return; // 読み込み中に案件が切り替わった
+
+  checklistIsNew = cl === null;
+  currentChecklist = cl ?? { projectId, items: emptyChecklistItems(), updatedAt: null, createdAt: null };
+
+  renderChecklist();
+}
+
+function renderChecklist(): void {
+  checklistGroupsEl.innerHTML = '';
+  if (!currentChecklist) return;
+  const checklist = currentChecklist;
+
+  CHECKLIST_CATEGORIES.forEach((category) => {
+    const defs = CHECKLIST_ITEMS.filter((d) => d.category === category);
+    if (defs.length === 0) return;
+
+    const group = document.createElement('div');
+    group.className = 'checklist-group';
+    group.append(textEl('h3', 'checklist-group__title', category));
+
+    defs.forEach((def) => {
+      const state = checklist.items.find((i) => i.id === def.id);
+      const checked = state?.checked ?? false;
+
+      const row = document.createElement('div');
+      row.className = 'checklist-item' + (checked ? ' is-done' : '');
+
+      const checkbox = document.createElement('button');
+      checkbox.className = 'action-item__checkbox' + (checked ? ' is-done' : '');
+      checkbox.innerHTML = checked
+        ? '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" style="width:0.8em;height:0.8em"><path d="M14 33 L26 45 L50 19"/></svg>'
+        : '';
+      checkbox.setAttribute('type', 'button');
+      checkbox.setAttribute('aria-label', checked ? '未確認に戻す' : '確認済みにする');
+      checkbox.addEventListener('click', () => toggleChecklistItem(def.id));
+
+      const body = document.createElement('div');
+      body.className = 'checklist-item__body';
+      body.append(textEl('div', 'checklist-item__label', def.label));
+
+      const noteInput = document.createElement('input');
+      noteInput.type = 'text';
+      noteInput.className = 'checklist-item__note';
+      noteInput.placeholder = 'メモ（URL・担当者名など、任意）';
+      noteInput.maxLength = 200;
+      noteInput.value = state?.note ?? '';
+      noteInput.addEventListener('input', () => {
+        const item = checklist.items.find((i) => i.id === def.id);
+        if (item) item.note = noteInput.value;
+        scheduleChecklistSave();
+      });
+      body.append(noteInput);
+
+      row.append(checkbox, body);
+      group.append(row);
+    });
+
+    checklistGroupsEl.append(group);
+  });
+
+  renderChecklistProgress();
+}
+
+function renderChecklistProgress(): void {
+  if (!currentChecklist) return;
+  const { done, total } = checklistProgress(currentChecklist.items);
+  checklistProgressEl.textContent = `確認済み ${done}/${total} 件`;
+}
+
+function toggleChecklistItem(id: string): void {
+  if (!currentChecklist) return;
+  const item = currentChecklist.items.find((i) => i.id === id);
+  if (!item) return;
+  item.checked = !item.checked;
+  renderChecklist();
+  scheduleChecklistSave();
+}
+
+function scheduleChecklistSave(): void {
+  if (checklistSaveTimer !== null) window.clearTimeout(checklistSaveTimer);
+  checklistSaved.textContent = '保存中…';
+  checklistSaveTimer = window.setTimeout(() => {
+    checklistSaveTimer = null;
+    void flushChecklistSave();
+  }, 800);
+}
+
+async function flushChecklistSave(): Promise<void> {
+  if (!currentUid || !currentChecklist) return;
+  const uid = currentUid;
+  const snapshot = currentChecklist;
+  try {
+    await saveChecklist(uid, snapshot, checklistIsNew);
+    checklistIsNew = false;
+    if (currentChecklist === snapshot) checklistSaved.textContent = '保存しました';
+  } catch {
+    checklistSaved.textContent = '';
+    showToast('チェックリストの保存に失敗しました');
+  }
+}
+
+function resetChecklistItems(): Promise<void> {
+  if (!currentChecklist) return Promise.resolve();
+  currentChecklist.items = emptyChecklistItems();
+  renderChecklist();
+  if (checklistSaveTimer !== null) { window.clearTimeout(checklistSaveTimer); checklistSaveTimer = null; }
+  return flushChecklistSave();
+}
+
+checklistProjectSelect.addEventListener('change', () => {
+  void loadChecklist(checklistProjectSelect.value);
+});
+
+btnChecklistReset.addEventListener('click', () => {
+  if (!currentChecklist) return;
+  const { done } = checklistProgress(currentChecklist.items);
+  if (done === 0) return;
+  pendingDelete = { type: 'checklist-reset', id: checklistProjectId ?? '', label: 'チェックリスト' };
+  confirmDialogTitle.textContent = 'チェックリストをすべて未確認に戻しますか？';
+  openOverlay(confirmOverlay);
 });
 
 // ============================================================

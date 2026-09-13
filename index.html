@@ -200,6 +200,35 @@
         </div>
       </section>
 
+      <!-- コーディング開始前チェック -->
+      <section class="section">
+        <div class="section__head">
+          <div>
+            <h2 class="section__title"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><rect x="14" y="10" width="36" height="46" rx="4"/><path d="M24 6 H40 V14 H24 Z" fill="currentColor" stroke="none"/><path d="M20 27 L24 31 L33 22"/><line x1="37" y1="27" x2="44" y2="27"/><path d="M20 42 L24 46 L33 37"/><line x1="37" y1="42" x2="44" y2="42"/></svg> コーディング開始前チェック</h2>
+            <p class="section__desc">着手前に依頼主へ確認すべき項目をチェックできます</p>
+          </div>
+        </div>
+
+        <div id="checklist-no-project" class="empty-state">
+          <p>先に「<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 18 H26 L32 24 H54 V48 H10 Z"/></svg> 案件」で案件を登録すると、チェックリストが使えます。</p>
+        </div>
+
+        <div id="checklist-panel" class="checklist hidden">
+          <div class="field">
+            <label class="field__label" for="checklist-project">案件</label>
+            <select id="checklist-project"></select>
+          </div>
+
+          <div class="checklist__toolbar">
+            <span id="checklist-progress" class="checklist__progress"></span>
+            <button type="button" id="btn-checklist-reset" class="btn btn--ghost btn--sm">すべて未確認に戻す</button>
+            <span id="checklist-saved" class="estimate__saved" aria-live="polite"></span>
+          </div>
+
+          <div id="checklist-groups" class="checklist-groups"></div>
+        </div>
+      </section>
+
     </main>
 
     <footer class="footer">
