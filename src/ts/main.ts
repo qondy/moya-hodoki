@@ -19,6 +19,9 @@ import {
   CHECKLIST_ITEMS, CHECKLIST_CATEGORIES,
 } from './checklists';
 import { Project, Entry, Estimate, Checklist, ProjectKind } from './types';
+import { initClickTracking } from './analytics';
+
+initClickTracking();
 
 // ============================================================
 // DOM refs
