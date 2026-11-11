@@ -56,6 +56,7 @@ const editProjectKind = document.getElementById('edit-project-kind') as HTMLSele
 const editProjectDeadline = document.getElementById('edit-project-deadline') as HTMLInputElement;
 const btnProjectEditClose = document.getElementById('btn-project-edit-close') as HTMLButtonElement;
 const btnProjectEditCancel = document.getElementById('btn-project-edit-cancel') as HTMLButtonElement;
+const projectSortSelect = document.getElementById('project-sort-select') as HTMLSelectElement;
 const projectListEl = document.getElementById('project-list') as HTMLElement;
 const projectEmpty = document.getElementById('project-empty') as HTMLElement;
 const archivedProjectListEl = document.getElementById('archived-project-list') as HTMLElement;
@@ -105,6 +106,15 @@ let allEntries: Entry[] = [];
 const selectedConcerns = new Set<string>();
 let freshEntryId: string | null = null;
 let editingProjectId: string | null = null;
+
+type ProjectSort = 'created' | 'deadline';
+const PROJECT_SORT_KEY = 'moya-hodoki:project-sort';
+let projectSort: ProjectSort = 'created';
+try {
+  if (window.localStorage.getItem(PROJECT_SORT_KEY) === 'deadline') projectSort = 'deadline';
+} catch {
+  // 保存した並び順が読めなくても、登録順で動かす
+}
 
 type PendingDelete =
   | { type: 'entry'; id: string; label: string }
@@ -419,12 +429,39 @@ projectForm.addEventListener('submit', (e) => {
     .finally(() => { submitBtn.disabled = false; });
 });
 
+/** 公開希望日が近い順（期限切れが先頭、日付なしは末尾）。同じ日付は登録順のまま */
+function sortProjects(list: Project[]): Project[] {
+  if (projectSort !== 'deadline') return list;
+  return list
+    .map((p, i) => ({ p, i }))
+    .sort((a, b) => {
+      const da = a.p.deadline;
+      const db = b.p.deadline;
+      if (da && db) return da < db ? -1 : da > db ? 1 : a.i - b.i;
+      if (da) return -1;
+      if (db) return 1;
+      return a.i - b.i;
+    })
+    .map((x) => x.p);
+}
+
+projectSortSelect.value = projectSort;
+projectSortSelect.addEventListener('change', () => {
+  projectSort = projectSortSelect.value === 'deadline' ? 'deadline' : 'created';
+  try {
+    window.localStorage.setItem(PROJECT_SORT_KEY, projectSort);
+  } catch {
+    // 保存できなくても今回の表示には影響しない
+  }
+  renderProjects();
+});
+
 function renderProjects(): void {
   projectListEl.innerHTML = '';
   archivedProjectListEl.innerHTML = '';
 
-  const active = allProjects.filter((p) => !p.archived);
-  const archived = allProjects.filter((p) => p.archived);
+  const active = sortProjects(allProjects.filter((p) => !p.archived));
+  const archived = sortProjects(allProjects.filter((p) => p.archived));
 
   projectEmpty.classList.toggle('hidden', active.length > 0);
   active.forEach((p) => projectListEl.append(renderProjectRow(p)));

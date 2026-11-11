@@ -562,6 +562,24 @@
   }
 }
 
+.project-sort {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  margin-bottom: $spacing-sm;
+  font-size: $font-size-sm;
+  color: $color-text-muted;
+
+  select {
+    padding: 6px $spacing-sm;
+    border: 1px solid $color-border;
+    border-radius: $radius-sm;
+    font-size: $font-size-sm;
+    background: $color-surface;
+    color: $color-text;
+  }
+}
+
 .archive-details {
   margin-top: $spacing-md;
 

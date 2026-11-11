@@ -147,6 +147,14 @@
           <button type="submit" class="btn btn--primary btn--sm">追加</button>
         </form>
 
+        <div class="project-sort">
+          <label for="project-sort-select">並び順</label>
+          <select id="project-sort-select">
+            <option value="created">登録順</option>
+            <option value="deadline">公開希望日が近い順</option>
+          </select>
+        </div>
+
         <div id="project-list" class="project-list"></div>
         <div id="project-empty" class="empty-state hidden">
           <p>登録された案件はありません。</p>
