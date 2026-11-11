@@ -49,6 +49,13 @@ const projectForm = document.getElementById('project-form') as HTMLFormElement;
 const inputProjectTitle = document.getElementById('input-project-title') as HTMLInputElement;
 const inputProjectKind = document.getElementById('input-project-kind') as HTMLSelectElement;
 const inputProjectDeadline = document.getElementById('input-project-deadline') as HTMLInputElement;
+const projectEditOverlay = document.getElementById('project-edit-overlay') as HTMLElement;
+const projectEditForm = document.getElementById('project-edit-form') as HTMLFormElement;
+const editProjectTitle = document.getElementById('edit-project-title') as HTMLInputElement;
+const editProjectKind = document.getElementById('edit-project-kind') as HTMLSelectElement;
+const editProjectDeadline = document.getElementById('edit-project-deadline') as HTMLInputElement;
+const btnProjectEditClose = document.getElementById('btn-project-edit-close') as HTMLButtonElement;
+const btnProjectEditCancel = document.getElementById('btn-project-edit-cancel') as HTMLButtonElement;
 const projectListEl = document.getElementById('project-list') as HTMLElement;
 const projectEmpty = document.getElementById('project-empty') as HTMLElement;
 const archivedProjectListEl = document.getElementById('archived-project-list') as HTMLElement;
@@ -97,6 +104,7 @@ let allProjects: Project[] = [];
 let allEntries: Entry[] = [];
 const selectedConcerns = new Set<string>();
 let freshEntryId: string | null = null;
+let editingProjectId: string | null = null;
 
 type PendingDelete =
   | { type: 'entry'; id: string; label: string }
@@ -133,6 +141,7 @@ function initStaticControls(): void {
     opt.value = k.key;
     opt.textContent = k.label;
     inputProjectKind.append(opt);
+    editProjectKind.append(opt.cloneNode(true));
 
     const tplOpt = document.createElement('option');
     tplOpt.value = k.key;
@@ -436,6 +445,14 @@ function renderProjectRow(project: Project): HTMLElement {
   const actions = document.createElement('div');
   actions.className = 'project-row__actions';
 
+  const editBtn = document.createElement('button');
+  editBtn.className = 'icon-btn';
+  editBtn.innerHTML = '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" style="width:1em;height:1em"><path d="M12 52 L14 40 L42 12 L52 22 L24 50 Z"/><line x1="36" y1="18" x2="46" y2="28"/></svg>';
+  editBtn.setAttribute('type', 'button');
+  editBtn.setAttribute('aria-label', '編集');
+  editBtn.setAttribute('data-track', 'project-edit');
+  editBtn.addEventListener('click', () => openProjectEdit(project));
+
   const archiveBtn = document.createElement('button');
   archiveBtn.className = 'icon-btn';
   archiveBtn.innerHTML = project.archived ? '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" style="width:1em;height:1em"><path d="M22 22 H40 A14 14 0 1 1 40 50 H30"/><path d="M30 12 L18 22 L30 32"/></svg>' : '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" style="width:1em;height:1em"><path d="M10 20 L32 10 L54 20 L32 30 Z"/><path d="M10 20 V46 L32 56 V30"/><path d="M54 20 V46 L32 56"/></svg>';
@@ -458,10 +475,52 @@ function renderProjectRow(project: Project): HTMLElement {
     openOverlay(confirmOverlay);
   });
 
-  actions.append(archiveBtn, delBtn);
+  actions.append(editBtn, archiveBtn, delBtn);
   row.append(actions);
   return row;
 }
+
+// ============================================================
+// 案件の編集
+// ============================================================
+function openProjectEdit(project: Project): void {
+  editingProjectId = project.id;
+  editProjectTitle.value = project.title;
+  editProjectKind.value = project.kind;
+  editProjectDeadline.value = project.deadline ?? '';
+  openOverlay(projectEditOverlay);
+  window.setTimeout(() => editProjectTitle.focus(), 0);
+}
+
+function closeProjectEdit(): void {
+  editingProjectId = null;
+  closeOverlay(projectEditOverlay);
+}
+
+btnProjectEditClose.addEventListener('click', closeProjectEdit);
+btnProjectEditCancel.addEventListener('click', closeProjectEdit);
+
+projectEditForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  if (!currentUid || !editingProjectId) return;
+  const title = editProjectTitle.value.trim();
+  if (!title) return;
+  const submitBtn = projectEditForm.querySelector('button[type="submit"]') as HTMLButtonElement;
+  if (submitBtn.disabled) return;
+  submitBtn.disabled = true;
+
+  updateProject(currentUid, editingProjectId, {
+    title,
+    kind: editProjectKind.value as ProjectKind,
+    deadline: editProjectDeadline.value || null,
+  })
+    .then(() => {
+      closeProjectEdit();
+      showToast('案件を更新しました');
+    })
+    .catch((err: Error) => showToast('更新に失敗しました: ' + err.message))
+    .finally(() => { submitBtn.disabled = false; });
+});
 
 // ============================================================
 // 削除確認ダイアログ（共通）

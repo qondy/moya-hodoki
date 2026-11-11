@@ -255,6 +255,34 @@
     </div>
   </div>
 
+  <!-- 案件編集モーダル -->
+  <div id="project-edit-overlay" class="dialog-overlay">
+    <div class="modal">
+      <div class="modal__head">
+        <div class="modal__title">案件を編集</div>
+        <button id="btn-project-edit-close" type="button" class="modal__close" aria-label="閉じる">&times;</button>
+      </div>
+      <form id="project-edit-form">
+        <div class="field">
+          <label class="field__label" for="edit-project-title">案件名</label>
+          <input type="text" id="edit-project-title" required maxlength="60" />
+        </div>
+        <div class="field">
+          <label class="field__label" for="edit-project-kind">種別</label>
+          <select id="edit-project-kind"></select>
+        </div>
+        <div class="field">
+          <label class="field__label" for="edit-project-deadline">公開希望日<span class="field__hint">任意</span></label>
+          <input type="date" id="edit-project-deadline" />
+        </div>
+        <div class="modal__actions">
+          <button type="button" id="btn-project-edit-cancel" class="btn btn--ghost">キャンセル</button>
+          <button type="submit" class="btn btn--primary">保存する</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- 要望送信モーダル -->
   <div id="feedback-modal-overlay" class="dialog-overlay">
     <div class="modal">
